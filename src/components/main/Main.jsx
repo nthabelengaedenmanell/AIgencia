@@ -26,17 +26,14 @@ const Main = () => {
   return (
     <div className="main">
       <div className="nav">
-        <p>Gemini</p>
+        
         <img src={assets.user} alt="" />
       </div>
       <div className="main-container">
         {!showResults ? (
           <>
             <div className="greet">
-              <p>
-                <span>Hello , Dev </span>
-              </p>
-              <p>How Can i Help You Today?</p>
+              <p>How Can I Help You Today?</p>
             </div>
             <div className="cards">
               <div
