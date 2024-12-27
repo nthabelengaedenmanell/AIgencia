@@ -26,13 +26,14 @@ const Main = () => {
   return (
     <div className="main">
       <div className="nav">
-        
+        <p>AI-gencia</p>
         <img src={assets.user} alt="" />
       </div>
       <div className="main-container">
         {!showResults ? (
           <>
             <div className="greet">
+
               <p>How Can I Help You Today?</p>
             </div>
             <div className="cards">
@@ -54,7 +55,7 @@ const Main = () => {
                 }
               >
                 <p>Brainstorm team bonding activities for our work retreat </p>
-                <img src={assets.message_icon} alt="" />
+              
               </div>
               <div
                 className="card"
@@ -63,7 +64,7 @@ const Main = () => {
                 }
               >
                 <p>How to Create a Gyroscope using Disc?</p>
-                <img src={assets.bulb_icon} alt="" />
+              
               </div>
               <div
                 className="card"
@@ -74,7 +75,7 @@ const Main = () => {
                 }}
               >
                 <p>Create a Script for the youtube video about coding </p>
-                <img src={assets.code_icon} alt="" />
+             
               </div>
             </div>
           </>
