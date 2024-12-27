@@ -2,6 +2,7 @@ import { useContext } from "react";
 import { assets } from "../../assets/assets";
 import "./main.css";
 import { Context } from "../../context/Context";
+
 const Main = () => {
 	const {
 		onSent,
@@ -19,8 +20,8 @@ const Main = () => {
 	return (
 		<div className="main">
 			<div className="nav">
-				<p>Gemini</p>
-				<img src={assets.user} alt="" />
+				<h2>AIgencia</h2>
+				<img src="https://img.icons8.com/pulsar-gradient/48/artificial-intelligence.png" alt="" />
 			</div>
 			<div className="main-container">
 				{!showResults ? (
@@ -39,7 +40,7 @@ const Main = () => {
 								}
 							>
 								<p>Suggest Some Place To Visit In West Bengal </p>
-								<img src={assets.compass_icon} alt="" />
+								
 							</div>
 							<div
 								className="card"
@@ -50,7 +51,7 @@ const Main = () => {
 								}
 							>
 								<p>Brainstorm team bonding activities for our work retreat </p>
-								<img src={assets.message_icon} alt="" />
+								
 							</div>
 							<div
 								className="card"
@@ -59,7 +60,7 @@ const Main = () => {
 								}
 							>
 								<p>How to Create a Gyroscope using Disc?</p>
-								<img src={assets.bulb_icon} alt="" />
+								
 							</div>
 							<div
 								className="card"
@@ -70,7 +71,7 @@ const Main = () => {
 								}}
 							>
 								<p>Create a Script for the youtube video about coding </p>
-								<img src={assets.code_icon} alt="" />
+								
 							</div>
 						</div>
 					</>

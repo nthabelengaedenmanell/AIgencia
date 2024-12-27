@@ -3,14 +3,15 @@
     min-height: 100vh;
     padding-bottom: 15vh;
     position: relative;
+    background-color: #2f2f2f;
 }
 .main .nav{
     display: flex;
     align-items: center;
     justify-content: space-between;
     font-size: 22px;
-    padding: 20px;
-    color: #585858;
+    padding: 30px;
+    color: #ffffff;
 }
 .main .nav img{
     width: 40px;
@@ -23,8 +24,8 @@
 .main-container .greet{
     margin: 50px 0px;
     font-size: 56px;
-    color:#c4c7c5;
-    font-weight: 500px;
+    color: #ffffff;
+    font-weight: 500;
 }
 .main .greet span{
     background: -webkit-linear-gradient(16deg,#4b90ff,#ff5546);
@@ -37,9 +38,9 @@
     gap: 15px;
 }
 .main .card{
-    height: 200px;
+    height: 130px;
     padding: 15px;
-    background-color: #f0f4f9;
+    background-color: #444444;
     border-radius: 10px;
     position: relative;
     cursor: pointer;
@@ -51,14 +52,14 @@
     border-radius: 20px;
     bottom: 10px;
     right: 10px;
-    background: white;
+    background: #333333;
 }
 .main .card p{
-    color: #585858;
+    color: #ffffff;
     font-size: 17px;
 }
 .main .card:hover{
-    background-color: #dfe4ea;
+    background-color: #555555;
 }
 .main-bottom {
     position: absolute;
@@ -73,7 +74,7 @@
     align-items: center;
     justify-content: space-between;
     gap: 20px;
-    background-color: #f0f4f9;
+    background-color: #444444;
     padding: 10px 20px;
     border-radius: 50px;
     margin-top: 100px;
@@ -89,6 +90,7 @@
     outline: 0;
     padding: 8px;
     font-size: 18px;
+    color: #ffffff;
 }
 .search-box div{
     display: flex;
@@ -100,11 +102,13 @@
     margin: 15px auto;
     text-align: center;
     font-weight: 300;
+    color: #ffffff;
 }
 .result{
     padding: 0px 5%;
     max-height: 70vh;
     overflow-y: scroll;
+    background-color: #2f2f2f;
 }
 .result::-webkit-scrollbar{
     display: none;
@@ -131,13 +135,13 @@
     gap: 10px;
 }
 .loader hr{
-border-radius: 4px;
-border: none;
-background-color: #f6f7f8;
-background: linear-gradient(to right,#b1d5ee,#c953e98a,#9ed7ff);
-background-size: 800px 50px;
-height: 20px;
-animation: loader 4s infinite linear;
+    border-radius: 4px;
+    border: none;
+    background-color: #4f4f4f;
+    background: linear-gradient(to right,#5f5f5f,#6f6f6f);
+    background-size: 800px 50px;
+    height: 20px;
+    animation: loader 4s infinite linear;
 }
 
 @keyframes loader{
@@ -152,6 +156,7 @@ animation: loader 4s infinite linear;
 
 .result-data p{
     font-size: 17px;
-    font-weight: 300px;
+    font-weight: 300;
     line-height: 1.8;
+    color: #ffffff;
 }
