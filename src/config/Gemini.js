@@ -5,7 +5,7 @@ import {
 } from "@google/generative-ai";
 
 const MODEL_NAME = "gemini-1.0-pro";
-const API_KEY = "AIzaSyBxEmeVHgx5jvbjUFeHzs50cqlDCyBcpB4";
+const API_KEY = process.env.REACT_APP_API_KEY;
 
 async function runChat(prompt) {
   const genAI = new GoogleGenerativeAI(API_KEY);
@@ -40,8 +40,7 @@ async function runChat(prompt) {
   const chat = model.startChat({
     generationConfig,
     safetySettings,
-    history: [
-    ],
+    history: [],
   });
 
   const result = await chat.sendMessage(prompt);
@@ -50,4 +49,4 @@ async function runChat(prompt) {
   return response.text();
 }
 
- export default runChat;
+export default runChat;

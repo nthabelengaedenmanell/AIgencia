@@ -1,84 +1,147 @@
 import { createContext, useState } from "react";
 import runChat from "../config/Gemini";
+import * as pdfjsLib from 'pdfjs-dist';
+
+
+pdfjsLib.GlobalWorkerOptions.workerSrc =  `/pdf.worker.min.js`;
 
 export const Context = createContext();
 
 const ContextProvider = (props) => {
-	const [input, setInput] = useState("");
-	const [recentPrompt, setRecentPrompt] = useState("");
-	const [prevPrompts, setPrevPrompts] = useState([]);
-	const [showResults, setShowResults] = useState(false);
-	const [loading, setLoading] = useState(false);
-	const [resultData, setResultData] = useState("");
+  const [input, setInput] = useState("");
+  const [recentPrompt, setRecentPrompt] = useState("");
+  const [prevPrompts, setPrevPrompts] = useState([]);
+  const [showResults, setShowResults] = useState(false);
+  const [loading, setLoading] = useState(false);
+  const [resultData, setResultData] = useState("");
+  const [pdfText, setPdfText] = useState('');
+  const [error, setError] = useState(null)
 
-	const delayPara = (index, nextWord) => {
-		setTimeout(function () {
-			setResultData((prev) => prev + nextWord);
-		}, 10 * index);
-	};
-    const newChat = () =>{
-        setLoading(false);
-        setShowResults(false)
+  const delayPara = (index, nextWord) => {
+    setTimeout(function () {
+      setResultData((prev) => prev + nextWord);
+    }, 10 * index);
+  };
+  const newChat = () => {
+      setLoading(false);
+      setShowResults(false)
+      setResultData("");
+  };
+ 
+  const handleFileChange = async (event) => {
+      setError(null);
+      const file = event.target.files[0];
+
+     if (!file) {
+         setError('No PDF file selected.');
+         return;
+     }
+
+     if (file.type !== 'application/pdf') {
+         setError('Please select a valid PDF file.');
+         return;
+     }
+
+     setLoading(true);
+
+     try{
+         const text = await extractTextFromPDF(file);
+         setPdfText(text);
+         console.log("Extracted PDF TEXT:", text)
+     }
+     catch(err) {
+         setError(`Error extracting text from pdf: ${err}`)
+     } finally {
+         setLoading(false);
+     }
+  };
+  const extractTextFromPDF = (file) => {
+    return new Promise((resolve, reject) => {
+        const fileReader = new FileReader();
+        fileReader.onload = async () => {
+            try {
+                const typedArray = new Uint8Array(fileReader.result);
+                const pdf = await pdfjsLib.getDocument(typedArray).promise;
+                let extractedText = "";
+
+                for (let pageNum = 1; pageNum <= pdf.numPages; pageNum++) {
+                    const page = await pdf.getPage(pageNum);
+                    const textContent = await page.getTextContent();
+                    const pageText = textContent.items.map(item => item.str).join(" ");
+                    extractedText += pageText + "\n";
+                }
+                resolve(extractedText);
+            } catch (err) {
+                reject(err);
+            }
+        };
+        fileReader.onerror = (err) => {
+          reject(err)
+        };
+        fileReader.readAsArrayBuffer(file);
+    });
+};
+  const onSent = async (prompt) => {
+    setResultData("");
+    setLoading(true);
+    setShowResults(true);
+    let response;
+    if (prompt !== undefined) {
+      response = await runChat(prompt);
+        setRecentPrompt(prompt)
+    } else if (pdfText) {
+      response = await runChat(pdfText)
+        setRecentPrompt("PDF Summary");
+        setPdfText("");
+    }else {
+      setPrevPrompts(prev => [...prev, input]);
+      setRecentPrompt(input);
+      response = await runChat(input);
     }
-
-	const onSent = async (prompt) => {
-		setResultData("");
-		setLoading(true);
-		setShowResults(true);
-        let response;
-        if(prompt !== undefined){
-            response = await runChat(prompt);
-            setRecentPrompt(prompt)
-        }else{
-            setPrevPrompts(prev=>[...prev,input]);
-            setRecentPrompt(input);
-            response=await runChat(input);
+    try {
+      let responseArray = response.split("**");
+      let newResponse = "";
+      for (let i = 0; i < responseArray.length; i++) {
+        if (i === 0 || i % 2 !== 1) {
+          newResponse += responseArray[i];
+        } else {
+          newResponse += "<b>" + responseArray[i] + "</b>";
         }
-		
-		try {
-			
-			
-			let responseArray = response.split("**");
-            let newResponse = "";
-			for (let i = 0; i < responseArray.length; i++) {
-				if (i === 0 || i % 2 !== 1) {
-					newResponse += responseArray[i];
-				} else {
-					newResponse += "<b>" + responseArray[i] + "</b>";
-				}
-			}
-			let newResponse2 = newResponse.split("*").join("<br/>");
-			let newResponseArray = newResponse2.split("");
-			for (let i = 0; i < newResponseArray.length; i++) {
-				const nextWord = newResponseArray[i];
-				delayPara(i, nextWord + "");
-			}
-		} catch (error) {
-			console.error("Error while running chat:", error);
-			// Handle error appropriately
-		} finally {
-			setLoading(false);
-			setInput("");
-		}
-	};
+      }
+      let newResponse2 = newResponse.split("*").join("<br/>");
+      let newResponseArray = newResponse2.split("");
+      for (let i = 0; i < newResponseArray.length; i++) {
+        const nextWord = newResponseArray[i];
+        delayPara(i, nextWord + "");
+      }
+    } catch (error) {
+      console.error("Error while running chat:", error);
+      // Handle error appropriately
+    } finally {
+      setLoading(false);
+      setInput("");
+    }
+  };
+ 
+  const contextValue = {
+    prevPrompts,
+    setPrevPrompts,
+    onSent,
+    setRecentPrompt,
+    recentPrompt,
+    input,
+    setInput,
+    showResults,
+    loading,
+    resultData,
+    newChat,
+    handleFileChange,
+     error,
+  };
 
-	const contextValue = {
-		prevPrompts,
-		setPrevPrompts,
-		onSent,
-		setRecentPrompt,
-		recentPrompt,
-		input,
-		setInput,
-		showResults,
-		loading,
-		resultData,
-		newChat,
-	};
-
-	return (
-		<Context.Provider value={contextValue}>{props.children}</Context.Provider>
-	);
+  return (
+    <Context.Provider value={contextValue}>{props.children}</Context.Provider>
+  );
 };
 
 export default ContextProvider;

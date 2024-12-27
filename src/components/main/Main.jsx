@@ -1,9 +1,7 @@
-import { useContext, useCallback } from "react";
-import { useDropzone } from "react-dropzone"; // You'll need to install this package
+import { useContext, useRef } from "react";
 import { assets } from "../../assets/assets";
 import "./main.css";
 import { Context } from "../../context/Context";
-
 const Main = () => {
   const {
     onSent,
@@ -13,49 +11,74 @@ const Main = () => {
     resultData,
     setInput,
     input,
-    // Add these to your context
-    handleFileUpload,
-    uploadedFile,
+    newChat,
+      handleFileChange,
+    error
   } = useContext(Context);
+ const fileInputRef = useRef(null)
 
   const handleCardClick = (promptText) => {
     setInput(promptText);
   };
-
-  const onDrop = useCallback((acceptedFiles) => {
-    const file = acceptedFiles[0];
-    if (file?.type === "application/pdf") {
-      handleFileUpload(file);
-    } else {
-      alert("Please upload a PDF file");
+    const handleFileUploadClick = () => {
+      fileInputRef.current.click();
     }
-  }, [handleFileUpload]);
-
-  const { getRootProps, getInputProps, isDragActive } = useDropzone({
-    onDrop,
-    accept: {
-      'application/pdf': ['.pdf']
-    },
-    multiple: false
-  });
-
   return (
     <div className="main">
       <div className="nav">
-        <h2>AIgencia</h2>
-        <img src="https://img.icons8.com/pulsar-gradient/48/artificial-intelligence.png" alt="" />
+        <p>Gemini</p>
+        <img src={assets.user} alt="" />
       </div>
       <div className="main-container">
         {!showResults ? (
           <>
             <div className="greet">
               <p>
-                <span>Hello </span>
+                <span>Hello , Dev </span>
               </p>
               <p>How Can i Help You Today?</p>
             </div>
             <div className="cards">
-              {/* ... your existing cards ... */}
+              <div
+                className="card"
+                onClick={() =>
+                  handleCardClick("Suggest Some Place To Visit In West Bengal")
+                }
+              >
+                <p>Suggest Some Place To Visit In West Bengal </p>
+                <img src={assets.compass_icon} alt="" />
+              </div>
+              <div
+                className="card"
+                onClick={() =>
+                  handleCardClick(
+                    "Brainstorm team bonding activities for our work retreat"
+                  )
+                }
+              >
+                <p>Brainstorm team bonding activities for our work retreat </p>
+                <img src={assets.message_icon} alt="" />
+              </div>
+              <div
+                className="card"
+                onClick={() =>
+                  handleCardClick("How to Create a Gyroscope using Disc?")
+                }
+              >
+                <p>How to Create a Gyroscope using Disc?</p>
+                <img src={assets.bulb_icon} alt="" />
+              </div>
+              <div
+                className="card"
+                onClick={() => {
+                  handleCardClick(
+                    "Create a Script for the youtube video about coding "
+                  );
+                }}
+              >
+                <p>Create a Script for the youtube video about coding </p>
+                <img src={assets.code_icon} alt="" />
+              </div>
             </div>
           </>
         ) : (
@@ -78,38 +101,43 @@ const Main = () => {
             </div>
           </div>
         )}
-
+         {error && <p style={{ color: 'red' }}>{error}</p>}
         <div className="main-bottom">
           <div className="search-box">
             <input
-              onChange={(e) => setInput(e.target.value)}
+              onChange={(e) => {
+                setInput(e.target.value);
+              }}
               value={input}
               type="text"
               placeholder="Enter the Prompt Here"
             />
             <div>
-              <div {...getRootProps()} className="file-upload-area">
-                <input {...getInputProps()} />
+              <input
+                type="file"
+                accept="application/pdf"
+                style={{display:'none'}}
+                onChange={handleFileChange}
+                ref={fileInputRef}
+              />
                 <img
                   src={assets.gallery_icon}
-                  alt="Upload PDF"
-                  className="upload-icon"
-                />
-              </div>
+                  alt=""
+                  onClick={()=>{
+                      handleFileUploadClick()
+                      newChat()
+                  }}
+              />
               <img src={assets.mic_icon} alt="" />
               <img
                 src={assets.send_icon}
                 alt=""
-                onClick={onSent}
+                onClick={() => {
+                  onSent();
+                }}
               />
             </div>
           </div>
-          {uploadedFile && (
-            <div className="uploaded-file">
-              <p>Uploaded: {uploadedFile.name}</p>
-              <button onClick={() => handleFileUpload(null)}>Remove</button>
-            </div>
-          )}
           <div className="bottom-info">
             <p>
               Gemini may display inaccurate info, including about people, so
